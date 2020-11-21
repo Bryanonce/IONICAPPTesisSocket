@@ -9,11 +9,29 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+
+//Servicios
+import { GooglePlus } from '@ionic-native/google-plus/ngx';
+import { HttpClientModule } from '@angular/common/http';
+import { Geolocation } from '@ionic-native/geolocation/ngx';
+import { IonicStorageModule } from '@ionic/storage';
+
+//Socket
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import {environment} from '../environments/environment';
+
+
+const config: SocketIoConfig = { 
+  url: environment.wsurl, options: {} 
+};
+
 @NgModule({
   declarations: [AppComponent],
   entryComponents: [],
-  imports: [BrowserModule, IonicModule.forRoot(), AppRoutingModule],
+  imports: [HttpClientModule,SocketIoModule.forRoot(config),BrowserModule, IonicModule.forRoot(), AppRoutingModule,IonicStorageModule.forRoot()], 
   providers: [
+    Geolocation,
+    GooglePlus,
     StatusBar,
     SplashScreen,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }

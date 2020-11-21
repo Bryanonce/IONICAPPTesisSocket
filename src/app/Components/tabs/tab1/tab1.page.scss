@@ -1,0 +1,38 @@
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+}
+
+body {
+    height: 80%;
+    width: 100%;
+}
+
+.contmapa {
+    height: 60%;
+    width: 90%;
+}
+
+#mapa-mapbox {
+    margin: auto;
+    height: 90%;
+    background: red;
+    width: 100%;
+}
+
+.contenedor {
+    display: flex;
+    margin: 25px;
+    height: 20%;
+}
+
+.contenedor div {
+    width: 20%;
+    justify-content: space-around;
+}
+
+.contenedor input {
+    border-radius: 5px;
+    width: 60%;
+    margin-top: 5px;
+}
