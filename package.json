@@ -19,6 +19,9 @@
         "@angular/platform-browser": "~10.0.0",
         "@angular/platform-browser-dynamic": "~10.0.0",
         "@angular/router": "~10.0.0",
+        "@capacitor/android": "^2.4.3",
+        "@capacitor/cli": "^2.4.3",
+        "@capacitor/core": "^2.4.3",
         "@ionic-native/core": "^5.0.0",
         "@ionic-native/geolocation": "^5.30.0",
         "@ionic-native/google-plus": "^5.30.0",
@@ -45,8 +48,8 @@
         "@types/mapbox-gl": "^1.12.8",
         "@types/node": "^12.11.1",
         "codelyzer": "^6.0.0",
-        "cordova-plugin-geolocation": "^4.1.0",
         "cordova-plugin-googleplus": "^8.5.1",
+        "cordova-sqlite-storage": "^5.1.0",
         "jasmine-core": "~3.5.0",
         "jasmine-spec-reporter": "~5.0.0",
         "karma": "~5.0.0",
@@ -65,7 +68,7 @@
             "cordova-plugin-googleplus": {
                 "WEB_APPLICATION_CLIENT_ID": "1003353693226-5p1okcfq6r6ivp1oe99o8o7omfcvu41m.apps.googleusercontent.com"
             },
-            "cordova-plugin-geolocation": {}
+            "cordova-sqlite-storage": {}
         }
     }
 }

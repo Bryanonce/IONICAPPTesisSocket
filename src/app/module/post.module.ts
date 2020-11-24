@@ -1,6 +1,6 @@
 export class MetodoPost{
     constructor(
-        public mat:Number,
+        public mat:String,
         public lat:Number,
         public long:Number
     ){}

@@ -1,0 +1,45 @@
+$tamanoPadding: 20px;
+$tamanoPadding2: 10px;
+.login {
+    background: #fff;
+    margin-top: 50px;
+    padding: $tamanoPadding $tamanoPadding/2 $tamanoPadding/2 $tamanoPadding/2;
+    input {
+        margin: 10px;
+        width: 95%;
+        padding: 15px;
+    }
+    button {
+        margin: 10px;
+        width: 95%;
+        padding: 15px;
+        color: #fff;
+        font-size: 20px;
+    }
+    p {
+        color: grey;
+    }
+    .btn1 {
+        background: rgb(4, 4, 61);
+    }
+    .btn2 {
+        background: rgb(224, 45, 22);
+    }
+}
+
+.login2 {
+    background: #fff;
+    margin-top: 50px;
+    padding: $tamanoPadding2 0 $tamanoPadding2/2 0;
+    p {
+        color: grey;
+        a {
+            text-decoration: none;
+            color: black;
+        }
+    }
+    .borde {
+        padding-bottom: 15px;
+        border-bottom: 2px solid rgb(29, 29, 29);
+    }
+}

@@ -36,3 +36,24 @@
 .rojo {
     color: red;
 }
+
+body,
+html {
+    width: 100%;
+}
+
+.redondo {
+    border-radius: 20px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.marker {
+    background-image: url('https://secure.webtoolhub.com/static/resources/icons/set101/1dc0e500.png');
+    background-size: cover;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+}
