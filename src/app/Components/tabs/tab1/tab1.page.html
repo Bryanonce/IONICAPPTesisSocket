@@ -8,5 +8,12 @@
 </ion-header>
 
 
+<div class="contenedor">
+    <label for="primero">Ultimas 24 horas <input (click)="cargarCheck(1)" type="radio" id="primero" name="time" [(checked)]="unoHours"></label>
+    <label for="segundo">Ultimas 6 horas <input (click)="cargarCheck(2)" type="radio" id="segundo" name="time" [(checked)]="dosHours"></label>
+    <label for="tercero">Ultima hora <input (click)="cargarCheck(3)" type="radio" id="tercero" name="time" [(checked)]="tresHours"></label>
+    <label for="cuarto">Tiempo Real<input (click)="cargarCheck(4)" type="radio" id="cuarto" name="time" [(checked)]="tresHours"></label>
+</div>
+
 
 <div id="mapa-mapbox"></div>

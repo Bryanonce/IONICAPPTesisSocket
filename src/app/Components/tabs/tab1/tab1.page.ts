@@ -18,7 +18,11 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
-  private nuevaCoor:any;
+  private realTime: Boolean = false;
+  public unoHours: Boolean = false;
+  public dosHours: Boolean = true;
+  public tresHours: Boolean = false;
+  public evento:string = 'recargar';
   public coorden = [];
   public consulta:Consulta;
   public anioIni:Number;
@@ -27,24 +31,103 @@ export class Tab1Page {
   
   {
     this.consulta = new Consulta();
-    this._servicioService.getDatosJson(environment.Apirest,this.consulta).subscribe((res:any)=>{
-      res.usuarios.forEach((elemento)=>{
-        this.coorden.push(
-          {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [elemento.long,elemento.lat]
-            }
-          }
-        );
-      })
-    });  
+    //this.cargarDatos(this.consulta);
   }
 
   ngOnInit() {
-    this.cargarMapa();
+    this.cargarCheck(2);
+  }
+
+
+
+  generarConsulta(horasMenos:number,diasMenos?:number):Consulta{
+    let fecha = new Date()
+    let consulta = new Consulta(
+      fecha.getFullYear(),
+      fecha.getMonth(),
+      fecha.getDate() - diasMenos || 0,
+      fecha.getHours()-horasMenos - environment.horaDesf
+      )
+      console.log(consulta);
+    return consulta;
+  }
+
+  cargarCheck(numero:number){
+    switch(numero){
+      case 1:
+        this.realTime = false;
+        this.cargarDatos(this.generarConsulta(0,1))
+        .then((resp)=>{
+          //console.log(resp)
+          this.cargarMapa();
+        })
+        break;
+      case 2:
+        this.realTime = false;
+        this.cargarDatos(this.generarConsulta(6))
+        .then((resp)=>{
+          //console.log(resp)
+          this.cargarMapa();
+        })
+        break;
+      case 3:
+        this.realTime = false;
+        this.cargarDatos(this.generarConsulta(1))
+        .then((resp)=>{
+          //console.log(resp)
+          this.cargarMapa();
+        })
+        break;
+      default:
+        this.realTime = true;
+        this.cargarDatos()
+        .then((resp)=>{
+          //console.log(resp)
+          this.cargarMapa();
+        })
+        break;
+    }
+    
+  }
+
+
+  cargarDatos(consulta?:Consulta){
+    return new Promise((resolve,reject)=>{
+      this.coorden = [];
+      if(consulta){
+        this._servicioService.getDatosJson(environment.Apirest,consulta).subscribe((res:any)=>{
+          res.usuarios.forEach((elemento)=>{
+            this.coorden.push(
+              {
+                "type": "Feature",
+                "properties": {},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [elemento.long,elemento.lat]
+                }
+              }
+            );
+          })
+        });
+      }else{
+        this._servicioService.getDatosSimplex(environment.ApirestUlti).subscribe((res:any)=>{
+          res.datos.forEach((elemento)=>{
+            this.coorden.push(
+              {
+                "type": "Feature",
+                "properties": {name:elemento._id},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [elemento.long,elemento.lat]
+                }
+              }
+            );
+          })
+        })
+      }
+      //console.log(this.coorden);
+      resolve(this.coorden);
+    })
     
   }
 
@@ -56,9 +139,6 @@ export class Tab1Page {
       center: [-80.096961, -0.712307], // starting position
       zoom: 15 // starting zoom
     })
-
-    
-
     map.on('load',()=>{
       map.addSource('earthquakes', {
         type: 'geojson',
@@ -67,17 +147,27 @@ export class Tab1Page {
           "features": this.coorden
         }
       });
-      this._webSocket.listendEvent('recargar').subscribe((res:{lat:number,long:number})=>{
-        this.coorden.push(
-          {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [res.long,res.lat]
+
+      this._webSocket.listendEvent(this.evento).subscribe((res:{lat:number,long:number,_id?:string})=>{
+        if(this.realTime){
+          //console.log(this.coorden.length);
+          this.coorden.forEach((elemento)=>{
+            if(elemento.properties.name === res._id){
+              elemento.geometry.coordinates = [res.long,res.lat]
             }
-          }
-        );
+          })
+        }else{
+          this.coorden.push(
+            {
+              "type": "Feature",
+              "properties": {},
+              "geometry": {
+                "type": "Point",
+                "coordinates": [res.long,res.lat]
+              }
+            }
+          );
+        }
         (map.getSource('earthquakes') as mapboxgl.GeoJSONSource).setData({
           "type": "FeatureCollection",
           "features": this.coorden
@@ -109,7 +199,6 @@ export class Tab1Page {
 
   }
   
-
 
 
 }

@@ -24,6 +24,7 @@ body {
     display: flex;
     margin: 25px;
     height: 20%;
+    z-index: 100;
 }
 
 .contenedor div {
@@ -31,8 +32,12 @@ body {
     justify-content: space-around;
 }
 
-.contenedor input {
+.contenedor label {
     border-radius: 5px;
     width: 60%;
     margin-top: 5px;
+}
+
+input {
+    color: black;
 }
