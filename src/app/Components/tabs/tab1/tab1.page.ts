@@ -79,7 +79,7 @@ export class Tab1Page {
     let consulta = new Consulta(
       fecha.getFullYear(),
       fecha.getMonth(),
-      fecha.getDate() - diasMenos || 0,
+      fecha.getDate() - (diasMenos || 0),
       fecha.getHours()-horasMenos - environment.horaDesf
       )
       console.log(consulta);
