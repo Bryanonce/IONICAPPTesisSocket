@@ -44,14 +44,12 @@ validacionServicio(){
        .then((resp)=>{
         this._geolocation.suscribirPost()
           .then((response:MetodoPost)=>{
-             this._webSocket.emitirMsj('enviarCoordServ',response,(response)=>{
-              console.log(response);
-             })
+             this._webSocket.emitirMsj('enviarCoordServ',response)
           })
       }).catch((err)=>{
         console.log(err)
       })
-    }while(this.inicio===true && this.contador<5)
+    }while(this.inicio===true)
     this.inicio = false;
     console.log('Ha salido del bucle');
     this.contador = 0;

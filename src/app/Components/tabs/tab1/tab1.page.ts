@@ -18,6 +18,7 @@ import { environment } from '../../../../environments/environment';
   styleUrls: ['tab1.page.scss']
 })
 export class Tab1Page {
+  mapa: mapboxgl.Map;
   private realTime: Boolean = false;
   public unoHours: Boolean = false;
   public dosHours: Boolean = true;
@@ -31,7 +32,40 @@ export class Tab1Page {
   
   {
     this.consulta = new Consulta();
-    //this.cargarDatos(this.consulta);
+    this._webSocket.listendEvent(this.evento).subscribe((res:{lat:number,long:number,_id?:string})=>{
+      if(this.realTime === true){
+        this.coorden = []
+        this._servicioService.getDatosSimplex(environment.ApirestUlti).subscribe((res:any)=>{
+          res.datos.forEach((elemento)=>{
+            this.coorden.push(
+              {
+                "type": "Feature",
+                "properties": {name:elemento._id},
+                "geometry": {
+                  "type": "Point",
+                  "coordinates": [elemento.long,elemento.lat]
+                }
+              }
+            );
+          })
+        })
+      }else{
+        this.coorden.push(
+          {
+            "type": "Feature",
+            "properties": {},
+            "geometry": {
+              "type": "Point",
+              "coordinates": [res.long,res.lat]
+            }
+          }
+        );
+      }
+      (this.mapa.getSource('earthquakes') as mapboxgl.GeoJSONSource).setData({
+        "type": "FeatureCollection",
+        "features": this.coorden
+      });
+    })
   }
 
   ngOnInit() {
@@ -125,56 +159,28 @@ export class Tab1Page {
           })
         })
       }
-      //console.log(this.coorden);
       resolve(this.coorden);
     })
     
   }
 
   cargarMapa(){
-    var map = new mapboxgl.Map({ 
+    this.mapa = new mapboxgl.Map({ 
       accessToken: environment.claveMapbox,
       container: 'mapa-mapbox', // container id
       style: 'mapbox://styles/mapbox/streets-v11',
       center: [-80.096961, -0.712307], // starting position
       zoom: 15 // starting zoom
     })
-    map.on('load',()=>{
-      map.addSource('earthquakes', {
+    this.mapa.on('load',()=>{
+      this.mapa.addSource('earthquakes', {
         type: 'geojson',
         data: {
           "type": "FeatureCollection",
           "features": this.coorden
         }
       });
-
-      this._webSocket.listendEvent(this.evento).subscribe((res:{lat:number,long:number,_id?:string})=>{
-        if(this.realTime){
-          //console.log(this.coorden.length);
-          this.coorden.forEach((elemento)=>{
-            if(elemento.properties.name === res._id){
-              elemento.geometry.coordinates = [res.long,res.lat]
-            }
-          })
-        }else{
-          this.coorden.push(
-            {
-              "type": "Feature",
-              "properties": {},
-              "geometry": {
-                "type": "Point",
-                "coordinates": [res.long,res.lat]
-              }
-            }
-          );
-        }
-        (map.getSource('earthquakes') as mapboxgl.GeoJSONSource).setData({
-          "type": "FeatureCollection",
-          "features": this.coorden
-        });
-      })
-      
-      map.addLayer({
+      this.mapa.addLayer({
         id: 'trees-point',
         type: 'heatmap',
         source: 'earthquakes',

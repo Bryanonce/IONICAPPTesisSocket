@@ -2,17 +2,30 @@ import { Injectable } from '@angular/core';
 import { Geolocation,Geoposition } from '@ionic-native/geolocation/ngx';
 import { ServicioService } from './servicio.service';
 import { MetodoPost } from '../module/post.module';
+import { Storage } from '@ionic/storage';
 
 @Injectable({
   providedIn: 'root'
 })
 export class GeolocalService {
   public form:MetodoPost;
-  public mat:String = '5faded46ae6eba45e563b69e';
+  public mat:String;
   public longitud:Number;
   public latitud:Number;
   constructor(public geolocation:Geolocation,
-    public _servicioService:ServicioService) { }
+    public _servicioService:ServicioService,
+    private storage:Storage
+    ) { 
+      storage.ready().then(()=>{
+        if(this.storage.get('userId')){
+          this.storage.get('userId')
+          .then((response) =>{
+            this.mat = response;
+          })
+        }
+        return
+      })
+    }
 
 
 

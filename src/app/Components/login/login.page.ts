@@ -42,12 +42,12 @@ export class LoginPage implements OnInit {
     this.authService.loginWithGoogle()
     .then((response) =>{
       //this.tokenApirest = response;
-      this._serverRest.loginRestGoogle(response).subscribe((obs:ObservablePost)=>{
+      this._serverRest.loginRestGoogle(response).subscribe((obs:any)=>{
         if(obs.ok==true){
-          this.router.navigate(['/tabs']);
-          this.storage.set('googleAuth','true');
-          this.storage.set('tokenApi',obs.token);
-          
+          this.storage.set('googleAuth','true'); 
+          this.storage.set('userId',obs.usuario._id) 
+          this.storage.set('tokenRest',obs.token) 
+          this.router.navigate(['/tabs']);        
         }
         //this.tokenApirest = obs;
       })
