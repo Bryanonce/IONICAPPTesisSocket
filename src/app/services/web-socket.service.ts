@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Socket } from 'ngx-socket-io';
 //import { Usuario } from '../classes/usuario';
+import { Storage } from '@ionic/storage';
+import { GeolocalService } from './geolocal.service'
 
 @Injectable({
   providedIn: 'root'
@@ -9,15 +11,17 @@ export class WebSocketService {
 
   public estadoServer:Boolean =  false;
   //public usuario:Usuario;
+  private token:String;
 
-
-  constructor(private socket: Socket) { 
+  constructor(private socket: Socket,private _geoLocal: GeolocalService) { 
     this.revisarStatus();
+    this.token = this._geoLocal.getToken();
   }
 
   revisarStatus(){
     this.socket.on('connect',()=>{
       console.log('Conectado al Servidor');
+      this.emitirMsj('conectado',{token:this.token});
       this.estadoServer = true;
     })
     this.socket.on('disconnect',()=>{

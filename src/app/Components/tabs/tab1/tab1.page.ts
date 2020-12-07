@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 
-
 //Servicios
 import { WebSocketService } from '../../../services/web-socket.service';
 import { ServicioService } from '../../../services/servicio.service';
@@ -8,6 +7,8 @@ import * as mapboxgl from 'mapbox-gl';
 
 //Modulos
 import { Consulta } from '../../../module/consulta.module';
+import { ConfigureRest } from '../../../module/restConfig.module';
+import { ConfigResponse } from '../../../module/restConfigGet.module'
 
 //Env
 import { environment } from '../../../../environments/environment';
@@ -27,49 +28,69 @@ export class Tab1Page {
   public coorden = [];
   public consulta:Consulta;
   public anioIni:Number;
+  public configMapa: ConfigureRest = new ConfigureRest();
+
   constructor(public _servicioService:ServicioService,
               public _webSocket:WebSocketService) 
   
   {
+    
     this.consulta = new Consulta();
-    this._webSocket.listendEvent(this.evento).subscribe((res:{lat:number,long:number,_id?:string})=>{
-      if(this.realTime === true){
-        this.coorden = []
-        this._servicioService.getDatosSimplex(environment.ApirestUlti).subscribe((res:any)=>{
-          res.datos.forEach((elemento)=>{
-            this.coorden.push(
-              {
-                "type": "Feature",
-                "properties": {name:elemento._id},
-                "geometry": {
-                  "type": "Point",
-                  "coordinates": [elemento.long,elemento.lat]
-                }
-              }
-            );
-          })
-        })
-      }else{
-        this.coorden.push(
-          {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
-              "type": "Point",
-              "coordinates": [res.long,res.lat]
-            }
-          }
-        );
+    this._servicioService.getDatosSimplex(environment.ApirestConfig)
+    .subscribe((resp:ConfigResponse)=>{
+      if(resp.ok){
+        this.configMapa = new ConfigureRest(
+          resp.config.latcentro,
+          resp.config.longcentro,
+          resp.config.latini,
+          resp.config.latfin,
+          resp.config.longini,
+          resp.config.latfin,
+          resp.config.escala
+          );
       }
-      (this.mapa.getSource('earthquakes') as mapboxgl.GeoJSONSource).setData({
-        "type": "FeatureCollection",
-        "features": this.coorden
-      });
+      console.log(this.configMapa);
+      this._webSocket.listendEvent(this.evento).subscribe((res:{lat:number,long:number,_id?:string})=>{
+        if(this.realTime === true){
+          this.coorden = []
+          this._servicioService.getDatosSimplex(environment.ApirestUlti).subscribe((res:any)=>{
+            res.datos.forEach((elemento)=>{
+              this.coorden.push(
+                {
+                  "type": "Feature",
+                  "properties": {"mag": this.configMapa.escala, name:elemento._id},
+                  "geometry": {
+                    "type": "Point",
+                    "coordinates": [elemento.long,elemento.lat]
+                  }
+                }
+              );
+            })
+          })
+        }else{
+          this.coorden.push(
+            {
+              "type": "Feature",
+              "properties": {"mag": this.configMapa.escala},
+              "geometry": {
+                "type": "Point",
+                "coordinates": [res.long,res.lat]
+              }
+            }
+          );
+        }
+        (this.mapa.getSource('earthquakes') as mapboxgl.GeoJSONSource).setData({
+          "type": "FeatureCollection",
+          "features": this.coorden
+        });
+      })
+      this.cargarCheck(2);
     })
+    
   }
 
   ngOnInit() {
-    this.cargarCheck(2);
+    
   }
 
 
@@ -134,7 +155,7 @@ export class Tab1Page {
             this.coorden.push(
               {
                 "type": "Feature",
-                "properties": {},
+                "properties": {"mag": this.configMapa.escala},
                 "geometry": {
                   "type": "Point",
                   "coordinates": [elemento.long,elemento.lat]
@@ -149,7 +170,7 @@ export class Tab1Page {
             this.coorden.push(
               {
                 "type": "Feature",
-                "properties": {name:elemento._id},
+                "properties": {"mag": this.configMapa.escala, name:elemento._id},
                 "geometry": {
                   "type": "Point",
                   "coordinates": [elemento.long,elemento.lat]
@@ -169,7 +190,7 @@ export class Tab1Page {
       accessToken: environment.claveMapbox,
       container: 'mapa-mapbox', // container id
       style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-80.096961, -0.712307], // starting position
+      center: [this.configMapa.longcentro, this.configMapa.latcentro], // starting position
       zoom: 15 // starting zoom
     })
     this.mapa.on('load',()=>{
@@ -185,6 +206,15 @@ export class Tab1Page {
         type: 'heatmap',
         source: 'earthquakes',
         paint: {
+          'heatmap-weight': [
+            'interpolate',
+            ['linear'],
+            ['get', 'mag'],
+            0,
+            0,
+            6,
+            1
+            ],
           'heatmap-color': ['interpolate',['linear'],['heatmap-density'],
             0,
             'rgba(33,102,172,0)',
@@ -200,7 +230,7 @@ export class Tab1Page {
             'rgb(178,24,43)'
             ]
         }
-      })
+      }, 'waterway-label')
     })
 
   }

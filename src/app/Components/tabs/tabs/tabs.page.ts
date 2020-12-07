@@ -23,10 +23,13 @@ export class TabsPage {
   public medicionesMax:Number = 50;
   public contador:number = 0;
   public inicio:Boolean;
+  private mat:String;
   constructor(public _geolocation:GeolocalService,
               public _servicioService:ServicioService,
               public _webSocket:WebSocketService
-              ) {}
+              ) {               
+                this.mat = this._geolocation.getMat();
+              }
 
     
 validacionServicio(){
@@ -44,6 +47,7 @@ validacionServicio(){
        .then((resp)=>{
         this._geolocation.suscribirPost()
           .then((response:MetodoPost)=>{
+            //console.log(response);
              this._webSocket.emitirMsj('enviarCoordServ',response)
           })
       }).catch((err)=>{

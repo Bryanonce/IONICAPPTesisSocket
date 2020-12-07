@@ -8,6 +8,7 @@ export const environment = {
   wsurl: 'http://localhost:5000',
   ApiGoogle: 'https://localhost/google',
   ApirestUlti: 'http://localhost:5000/ultidatos',
+  ApirestConfig: 'http://localhost:5000/config',
   horaDesf: 5
 };
 
