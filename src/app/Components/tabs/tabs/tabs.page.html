@@ -4,10 +4,13 @@
         <ng-template #iniciar>
 
             <button (click)="validacionServicio()">Iniciar Servicio</button>
+
         </ng-template>
+
         <ng-template #terminar>
             <button (click)="validacionServicio()">Terminar Servicio</button>
         </ng-template>
+
         <div *ngIf="!inicio;then iniciar;else terminar"></div>
     </div>
 
@@ -23,9 +26,9 @@
             <ion-label>Monitoreo</ion-label>
         </ion-tab-button>
 
-        <ion-tab-button tab="tab3">
+        <ion-tab-button (click)="cerrarSesion()">
             <ion-icon name="square"></ion-icon>
-            <ion-label>Configuraciones</ion-label>
+            <ion-label>Cerrar Sesion</ion-label>
         </ion-tab-button>
     </ion-tab-bar>
 

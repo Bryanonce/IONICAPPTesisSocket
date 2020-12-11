@@ -9,6 +9,8 @@ import { StatusBar } from '@ionic-native/status-bar/ngx';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+
 
 //Servicios
 import { GooglePlus } from '@ionic-native/google-plus/ngx';
@@ -34,7 +36,8 @@ const config: SocketIoConfig = {
     GooglePlus,
     StatusBar,
     SplashScreen,
-    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    LocalNotifications
   ],
   bootstrap: [AppComponent]
 })

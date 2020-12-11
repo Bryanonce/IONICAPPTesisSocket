@@ -3,10 +3,16 @@ import { EntragaModule } from '../../../module/entrega.module';
 import { WebSocketService } from '../../../services/web-socket.service';
 import { GeolocalService } from '../../../services/geolocal.service';
 import { ServicioService } from '../../../services/servicio.service';
+import { Router } from '@angular/router';
+
+
+import { LocalNotifications } from '@ionic-native/local-notifications/ngx';
+import { Storage } from '@ionic/storage';
 
 
 //env
 import { environment } from '../../../../environments/environment';
+
 
 
 
@@ -23,23 +29,51 @@ export class TabsPage {
   public medicionesMax:Number = 50;
   public contador:number = 0;
   public inicio:Boolean;
-  private mat:String;
   constructor(public _geolocation:GeolocalService,
               public _servicioService:ServicioService,
-              public _webSocket:WebSocketService
-              ) {               
-                this.mat = this._geolocation.getMat();
+              public _webSocket:WebSocketService,
+              private localNotifications: LocalNotifications,
+              private storage:Storage,
+              public router: Router
+              ) 
+  {
+    this._webSocket.revisarStatus(true);
+    this.storage.ready().then(()=>{
+      this.storage.get('userId')
+        .then((userId:string) =>{
+          this._webSocket.listendEvent('avisoPeligro')
+            .subscribe((data:{id:string,peligro:boolean})=>{
+              if(data.id === userId && data.peligro === true){
+                if(!environment.production){
+                  alert('Peligro inminente');
+                }else{
+                  this.llamarNoti();
+                }
               }
-
-    
-validacionServicio(){
-  if(this.inicio==true){
-    this.inicio = false;
-  }else{
-    this.inicio = true;
-    this.buclePost()
+            })
+        })
+    })
   }
-}
+  
+  llamarNoti(){
+    let isAndroid = true;
+    this.localNotifications.schedule({
+      id: 1,
+      text: 'Es probable que se encuentre en una zona de Peligro',
+      sound: isAndroid? 'file://sound.mp3': 'file://beep.caf',
+      data: { secret: 'Hola' }
+    });
+  }
+
+  validacionServicio(){
+    if(this.inicio==true){
+      this.inicio = false;
+    }else{
+      this.inicio = true;
+      this.buclePost()
+    }
+  }
+
   async buclePost(){
     do{
       this.contador++
@@ -68,4 +102,15 @@ validacionServicio(){
       
     })
   }
+
+  cerrarSesion(){
+    this.storage.remove('googleAuth')
+    .then(()=>{
+      return this.storage.remove('userId')
+    })
+    .then(()=>{
+      this.router.navigate(['/']);
+    })
+  }
+
 }

@@ -18,16 +18,20 @@ export class LoginPage implements OnInit {
 
   email: string;
   password: string;
+  public usuariol:any;
+  public usuariok:any;
   //public tokenApirest:any;
 
   constructor(private storage: Storage, private authService: AuthService, public router: Router,private _serverRest:ServiceApiRestService) { 
     storage.ready().then(()=>{
       if(this.storage.get('googleAuth')){
         this.storage.get('googleAuth')
-      .then((response) =>{
-        if(response == 'true'){
-          this.loginGoogle();
-        }
+        .then((response) =>{
+          if(response === 'true'){
+            this.router.navigate(['/tabs']);
+          }else{
+            this.loginGoogle();
+          }
       })
       }
       return
@@ -45,10 +49,11 @@ export class LoginPage implements OnInit {
       this._serverRest.loginRestGoogle(response).subscribe((obs:any)=>{
         if(obs.ok==true){
           this.storage.set('googleAuth','true'); 
-          this.storage.set('userId',obs.usuario._id) 
-          this.storage.set('tokenRest',obs.token) 
-          this.router.navigate(['/tabs']);        
+          this.storage.set('userId',obs.usuario._id);
+          this.storage.set('tokenRest',obs.token);
+          this.router.navigate(['/tabs']);
         }
+        
         //this.tokenApirest = obs;
       })
     }).catch(err => {
