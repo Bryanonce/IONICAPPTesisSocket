@@ -105,7 +105,6 @@ export class TabsPage {
   contadorPromesa(time: number) {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        //console.log('Esperando ....');
         resolve(true);
       }, time)
 

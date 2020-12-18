@@ -97,14 +97,24 @@ export class Tab1Page {
 
   generarConsulta(horasMenos:number,diasMenos?:number):Consulta{
     let fecha = new Date()
-    let consulta = new Consulta(
-      fecha.getFullYear(),
-      fecha.getMonth(),
-      fecha.getDate() - (diasMenos || 0),
-      fecha.getHours()-horasMenos - environment.horaDesf
+    if(!diasMenos){
+      let _consulta = new Consulta(
+        fecha.getFullYear(),
+        fecha.getMonth(),
+        fecha.getDate() - (diasMenos || 0),
+        fecha.getHours()- horasMenos - environment.horaDesf
       )
-      console.log(consulta);
-    return consulta;
+      console.log(_consulta);
+      return _consulta;
+    }else{
+      let _consulta = new Consulta(
+        fecha.getFullYear(),
+        fecha.getMonth(),
+        fecha.getDate() - (diasMenos || 0)
+      )
+      console.log(_consulta);
+      return _consulta;
+    }
   }
 
   cargarCheck(numero:number){
