@@ -180,7 +180,7 @@ export class Tab1Page {
             this.coorden.push(
               {
                 "type": "Feature",
-                "properties": {"mag": this.configMapa.escala, name:elemento._id},
+                "properties": {"mag": this.configMapa.escala, "name":elemento._id},
                 "geometry": {
                   "type": "Point",
                   "coordinates": [elemento.long,elemento.lat]
