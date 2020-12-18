@@ -9,6 +9,7 @@ export const environment = {
   ApiGoogle: 'https://localhost/google',
   ApirestUlti: 'http://localhost:5000/ultidatos',
   ApirestConfig: 'http://localhost:5000/config',
+  ApirestReal: 'http://localhost:5000/real',
   horaDesf: 5
 };
 

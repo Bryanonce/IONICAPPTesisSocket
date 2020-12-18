@@ -6,5 +6,6 @@ export const environment = {
   ApiGoogle: 'https://socketiotesis.herokuapp.com/google',
   ApirestUlti: 'https://socketiotesis.herokuapp.com/ultidatos',
   ApirestConfig: 'https://socketiotesis.herokuapp.com/config',
+  ApirestReal: 'https://socketiotesis.herokuapp.com/real',
   horaDesf: 0
 };

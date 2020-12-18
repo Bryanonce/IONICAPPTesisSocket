@@ -76,7 +76,7 @@ export class TabsPage {
   async buclePost() {
     let dataCoor: MetodoPost[] = [];
     let count = 0
-    let numArray:number = 5
+    let numArray:number = 10
     do {
       if (count < numArray) {
       } else {
