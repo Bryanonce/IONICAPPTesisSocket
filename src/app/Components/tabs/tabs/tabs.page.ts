@@ -37,6 +37,7 @@ export class TabsPage {
     public router: Router
   ) {
     this._webSocket.revisarStatus(true);
+    
     this.storage.ready().then(() => {
       this.storage.get('userId')
         .then((userId: string) => {
@@ -57,10 +58,10 @@ export class TabsPage {
   llamarNoti() {
     let isAndroid = true;
     this.localNotifications.schedule({
-      id: 1,
-      text: 'Es probable que se encuentre en una zona de Peligro',
+      title: 'Notificación de SafeMap',
+      text: 'Es probable que se encuentre en una zona de peligro',
+      foreground: true,
       sound: isAndroid ? 'file://sound.mp3' : 'file://beep.caf',
-      data: { secret: 'Hola' }
     });
   }
 
@@ -76,12 +77,12 @@ export class TabsPage {
   async buclePost() {
     let dataCoor: MetodoPost[] = [];
     let count = 0
-    let numArray:number = 10
+    let numArray: number = 10
     do {
       if (count < numArray) {
       } else {
         count = 0;
-        dataCoor.splice(0,dataCoor.length);
+        dataCoor.splice(0, dataCoor.length);
       }
       this.contador++;
       count++;
@@ -91,11 +92,11 @@ export class TabsPage {
           return this.contadorPromesa(500);
         }).then(() => {
           //console.log(dataCoor);
-          if(dataCoor.length === numArray){
-            this._webSocket.emitirMsj('enviarCoordServ',dataCoor)
+          if (dataCoor.length === numArray) {
+            this._webSocket.emitirMsj('enviarCoordServ', dataCoor)
           }
         })
-      
+
     } while (this.inicio === true /*&& this.contador <= 5*/)
     this.inicio = false;
     console.log('Ha salido del bucle');
